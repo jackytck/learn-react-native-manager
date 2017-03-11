@@ -10,7 +10,7 @@ import {
 
 class LoginForm extends Component {
   onEmailChange (text) {
-    this.props.emailChanged(text)
+    this.props.emailChanged(text.toLowerCase())
   }
 
   render () {
@@ -21,6 +21,7 @@ class LoginForm extends Component {
             label='Email'
             placeholder='email@gmail.com'
             onChangeText={this.onEmailChange.bind(this)}
+            value={this.props.email}
           />
         </CardSection>
 
@@ -43,7 +44,14 @@ class LoginForm extends Component {
 }
 
 LoginForm.propTypes = {
+  email: PropTypes.string,
   emailChanged: PropTypes.func
 }
 
-export default connect(null, { emailChanged })(LoginForm)
+const mapStateToProps = state => {
+  return {
+    email: state.auth.email
+  }
+}
+
+export default connect(mapStateToProps, { emailChanged })(LoginForm)
