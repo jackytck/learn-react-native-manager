@@ -5,15 +5,19 @@ import Communications from 'react-native-communications'
 import {
   Card,
   CardSection,
-  Button
+  Button,
+  Confirm
 } from './common'
 import {
   employeeUpdate,
-  employeeSave
+  employeeSave,
+  employeeDelete
 } from '../actions/EmployeeActions'
 import EmployeeForm from './EmployeeForm'
 
 class EmployeeEdit extends Component {
+  state = { showModal: false }
+
   componentWillMount () {
     each(this.props.employee, (value, prop) => {
       this.props.employeeUpdate({ prop, value })
@@ -36,6 +40,22 @@ class EmployeeEdit extends Component {
     Communications.text(phone, `Your upcoming shift is on ${shift}.`)
   }
 
+  flipShowModal () {
+    this.setState({ showModal: !this.state.showModal })
+  }
+
+  onFirePress () {
+    this.flipShowModal()
+  }
+
+  onAccept () {
+    this.props.employeeDelete({ uid: this.props.employee.uid })
+  }
+
+  onDecline () {
+    this.flipShowModal()
+  }
+
   render () {
     return (
       <Card>
@@ -51,6 +71,20 @@ class EmployeeEdit extends Component {
             Text Schedule
           </Button>
         </CardSection>
+
+        <CardSection>
+          <Button onPress={this.onFirePress.bind(this)}>
+            Fire Employee
+          </Button>
+        </CardSection>
+
+        <Confirm
+          visible={this.state.showModal}
+          onAccept={this.onAccept.bind(this)}
+          onDecline={this.onDecline.bind(this)}
+        >
+          Are you sure you want to delete this?
+        </Confirm>
       </Card>
     )
   }
@@ -71,10 +105,12 @@ EmployeeEdit.propTypes = {
   phone: PropTypes.string,
   shift: PropTypes.string,
   employeeUpdate: PropTypes.func,
-  employeeSave: PropTypes.func
+  employeeSave: PropTypes.func,
+  employeeDelete: PropTypes.func
 }
 
 export default connect(mapStateToProps, {
   employeeUpdate,
-  employeeSave
+  employeeSave,
+  employeeDelete
 })(EmployeeEdit)
