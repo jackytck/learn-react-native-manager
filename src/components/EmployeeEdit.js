@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { each } from 'lodash'
+import Communications from 'react-native-communications'
 import {
   Card,
   CardSection,
@@ -29,6 +30,12 @@ class EmployeeEdit extends Component {
     })
   }
 
+  onTextPress () {
+    const { phone, shift } = this.props
+
+    Communications.text(phone, `Your upcoming shift is on ${shift}.`)
+  }
+
   render () {
     return (
       <Card>
@@ -36,6 +43,12 @@ class EmployeeEdit extends Component {
         <CardSection>
           <Button onPress={this.onButtonPress.bind(this)}>
             Save Changes
+          </Button>
+        </CardSection>
+
+        <CardSection>
+          <Button onPress={this.onTextPress.bind(this)}>
+            Text Schedule
           </Button>
         </CardSection>
       </Card>
